@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/users")
 @Validated
 public class UserController {
-    // Controller class for handling user-related requests.
-    // This class will define the endpoints for user registration, login, and other user-related operations.
+
+
 }
