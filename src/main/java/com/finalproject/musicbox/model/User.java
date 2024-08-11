@@ -1,6 +1,7 @@
 package com.finalproject.musicbox.model;
 
 import jakarta.persistence.*;
+import java.util.Set;
 
 /**
  * Entity class representing a User in the system.
@@ -24,8 +25,8 @@ public class User {
     @Column(nullable = false)
     private String status;
 
-    @Column(nullable = false)
-    private Boolean isPremium;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Subscription> subscriptions;
 
     // Getters and Setters
 
@@ -69,11 +70,11 @@ public class User {
         this.status = status;
     }
 
-    public Boolean getIsPremium() {
-        return isPremium;
+    public Set<Subscription> getSubscriptions() {
+        return subscriptions;
     }
 
-    public void setIsPremium(Boolean isPremium) {
-        this.isPremium = isPremium;
+    public void setSubscriptions(Set<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 }
