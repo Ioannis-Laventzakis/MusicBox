@@ -7,33 +7,43 @@ import com.finalproject.musicbox.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     public User createUser(User user, boolean isPremium) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByName("USER"));  // Assign basic user role
-
+        // Assign default role
+        Role userRole = roleRepository.findByName("USER");
+        user.setStatus("ACTIVE"); // Set default status
         if (isPremium) {
-            roles.add(roleRepository.findByName("PREMIUM"));  // Assign premium role if applicable
+            user.setIsPremium(true);
+            Role premiumRole = roleRepository.findByName("PREMIUM");
+            // Logic to assign the premium role if necessary
+        } else {
+            user.setIsPremium(false);
         }
-
-        user.setRoles(roles);  // Set roles to user
         return userRepository.save(user);
     }
 
-    public User findByName(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
+    }
 
-    // Other potential methods (e.g., findUserById, updateUser)...
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }
