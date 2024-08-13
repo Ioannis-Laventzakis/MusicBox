@@ -7,6 +7,7 @@ import jakarta.persistence.*;
  * This class is mapped to a database table using JPA annotations.
  */
 @Entity
+@Table(name = "roles")
 public class Role {
 
     /**
