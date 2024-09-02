@@ -1,0 +1,141 @@
+The `SubscriptionService` class in the provided context serves to manage subscription-related operations for users within the application. Its primary responsibilities include:
+
+1. **Creating a new subscription for a user**: This involves accepting a user ID and an end date for the subscription, creating a `Subscription` object, setting the user's premium status to true, and saving both the user and subscription information to the database.
+
+2. **Checking if a user is a premium user**: By accepting a user ID, it determines whether the specified user has a premium status based on their subscription details.
+
+This class interacts with the `UserRepository` to fetch user details and the `SubscriptionRepository` to save subscription details, encapsulating the logic required to manage subscriptions within the application.
+
+The UserService class is designed to manage user-related operations within the application. Its main purposes include:  
+Saving a User entity: It provides a method to save a User entity to the database. This is useful for creating new users or updating existing user information.  
+Finding a User by username: It offers a functionality to find a User entity based on the username. This is particularly useful for authentication purposes, user profile retrieval, or any operation that requires user identification by username.  
+This class leverages the UserRepository for direct interactions with the database, abstracting the complexity of database operations and providing a clean interface for user management tasks.
+
+The SongRepository class, while not explicitly detailed in the provided context, would typically serve the purpose of handling CRUD (Create, Read, Update, Delete) operations for Song entities within the application. It would extend JpaRepository or another Spring Data repository interface, leveraging Spring Data JPA functionalities to interact with the database. This allows for operations such as saving a new song, finding songs by various attributes (e.g., title, artist), updating song details, and deleting songs. The class would abstract the complexity of direct database interactions, providing a clean and simple API for song management tasks within the application.
+
+The SubscriptionRepository class, based on the context provided and common patterns in Spring Data JPA, is designed to handle CRUD operations for Subscription entities within the application. It extends JpaRepository, leveraging Spring Data JPA functionalities to interact with the database. This setup allows for operations such as:  
+Saving a new subscription to the database.
+Finding subscriptions by various attributes, such as user ID or subscription end date.
+Updating subscription details.
+Deleting subscriptions.
+This class abstracts the complexity of direct database interactions, providing a streamlined API for managing subscription data within the application.
+
+The SubscriptionController class is responsible for handling web requests related to subscriptions within the application. It defines endpoints for two main operations:  
+Creating a new subscription for a user: This endpoint accepts a user ID and an end date for the subscription. It utilizes the SubscriptionService to create a new Subscription object and returns the created subscription as a response.  
+Checking if a user has a premium status: This endpoint accepts a user ID and checks the user's premium status by consulting the SubscriptionService. It returns a boolean indicating whether the user is a premium user or not.  
+This class serves as a bridge between the client-side requests and the server-side operations related to subscription management, ensuring that the data flow for subscription-related actions is correctly managed and executed.
+
+Database Schema: Added an audio table to store metadata.
+Entity Class: Created Audio.java for the audio table.
+Repository Interface: Created AudioRepository.java for database operations.
+Service Layer: Implemented AudioService.java to handle file storage and metadata management.
+Controller Layer: Implemented AudioController.java to handle HTTP requests for uploading and retrieving audio files.
+Configuration: Set the file upload directory in application.properties.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Box</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-gap: 10px;
+        }
+        .grid button {
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            background-color: #555;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .grid button:active {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Get started making music</h1>
+    <p>Click a box to turn it on or off.</p>
+    <div class="grid">
+        <button onclick="playAudio('drums1')">▶</button>
+        <button onclick="playAudio('bass1')">▶</button>
+        <button onclick="playAudio('chords1')">▶</button>
+        <button onclick="playAudio('melody1')">▶</button>
+        <button onclick="playAudio('drums2')">▶</button>
+        <button onclick="playAudio('bass2')">▶</button>
+        <button onclick="playAudio('chords2')">▶</button>
+        <button onclick="playAudio('melody2')">▶</button>
+        <!-- Add more buttons as needed -->
+    </div>
+
+    <script>
+        function playAudio(track) {
+            const audio = new Audio(`/audio/${track}.wav`);
+            audio.play();
+        }
+    </script>
+</body>
+</html>
+
+3. Implement a controller to serve the HTML and audio files
+src/main/java/org/trucker/musicbox/controller/WebController.java
+java
+Copy code
+package org.trucker.musicbox.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+@Controller
+public class WebController {
+
+    @GetMapping("/")
+    public String index() {
+        return "index"; // This maps to src/main/resources/templates/index.html
+    }
+
+    @GetMapping("/audio/{track}.wav")
+    @ResponseBody
+    public byte[] getAudio(@PathVariable String track) throws IOException {
+        Path audioPath = Paths.get("src/main/resources/static/audio", track + ".wav");
+        return Files.readAllBytes(audioPath);
+    }
+}
+4. Add audio files to the static resources
+Create a directory src/main/resources/static/audio and add your WAV files there. Name them appropriately (e.g., drums1.wav, bass1.wav, etc.).
+
+Running the Application
+Start your Spring Boot application.
+Navigate to http://localhost:8080 in your web browser.
+Click on the buttons to play the audio files.
+Summary
+Spring Boot Setup: The project is set up with Spring Boot dependencies.
+HTML Interface: Created a simple grid layout with buttons to play audio.
+Controller: Serves the HTML page and handles requests for audio files.
+JavaScript: Plays audio files when the buttons are clicked.
+Audio Files: Stored in the static directory to be served directly by Spring Boot.
+This setup will provide you with a functional prototype similar to the reference you provided, where users can play different audio clips by clicking on buttons in a grid layout.
